@@ -1,5 +1,6 @@
 // defines controller
 
+
 const Note = require('../models/note.model.js');
 
 // create and save new note
@@ -64,35 +65,35 @@ exports.findOne = (req, res) => {
 
 // update a note
 exports.update = (req, res) => {
-// Validate Request
-if(!req.body.content) {
-    return res.status(400).send({
-        message: "Note content can not be empty"
-    });
-}
-
-// Find note and update it with the request body
-Note.findByIdAndUpdate(req.params.noteId, {
-    title: req.body.title || "Untitled Note",
-    content: req.body.content
-}, {new: true}) // used to return the modified document to the then() function instead of the original
-.then(note => {
-    if(!note) {
-        return res.status(404).send({
-            message: "Note not found with id " + req.params.noteId
+    // Validate Request
+    if(!req.body.content) {
+        return res.status(400).send({
+            message: "Note content can not be empty"
         });
     }
-    res.send(note);
-}).catch(err => {
-    if(err.kind === 'ObjectId') {
-        return res.status(404).send({
-            message: "Note not found with id " + req.params.noteId
-        });                
-    }
-    return res.status(500).send({
-        message: "Error updating note with id " + req.params.noteId
+
+    // Find note and update it with the request body
+    Note.findByIdAndUpdate(req.params.noteId, {
+        title: req.body.title || "Untitled Note",
+        content: req.body.content
+    }, {new: true})
+    .then(note => {
+        if(!note) {
+            return res.status(404).send({
+                message: "Note not found with id " + req.params.noteId
+            });
+        }
+        res.send(note);
+    }).catch(err => {
+        if(err.kind === 'ObjectId') {
+            return res.status(404).send({
+                message: "Note not found with id " + req.params.noteId
+            });                
+        }
+        return res.status(500).send({
+            message: "Error updating note with id " + req.params.noteId
+        });
     });
-  });
 };
 
 // delete a note
